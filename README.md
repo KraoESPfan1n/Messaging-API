@@ -1,4 +1,4 @@
-# SUMEE Dev Workspace
+# Message Dev Workspace
 
 This repo contains:
 
