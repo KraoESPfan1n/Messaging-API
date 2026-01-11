@@ -1,15 +1,55 @@
-# What is this?
+# SUMEE Dev Workspace
 
-The github.dev web-based editor is a lightweight editing experience that runs entirely in your browser. You can navigate files and source code repositories from GitHub, and make and commit code changes.
+This repo contains:
 
-There are two ways to go directly to a VS Code environment in your browser and start coding:
+- `api/` PHP REST API (Slim)
+- `ws/` Bun + ws realtime gateway
+- `web/` React testing UI
+- `db/` MySQL schema
+- `scripts/` GC worker for attachments
 
-* Press the . key on any repository or pull request.
-* Swap `.com` with `.dev` in the URL. For example, this repo https://github.com/github/dev becomes http://github.dev/github/dev
+## Quick start (local)
 
-Preview the gif below to get a quick demo of github.dev in action.
+1) Start MySQL/Redis/MinIO:
 
-![github dev](https://user-images.githubusercontent.com/856858/130119109-4769f2d7-9027-4bc4-a38c-10f297499e8f.gif)
+```bash
+docker compose up -d
+```
 
-# Why?
-It’s a quick way to edit and navigate code. It's especially useful if you want to edit multiple files at a time or take advantage of all the powerful code editing features of Visual Studio Code when making a quick change. For more information, see our [documentation](https://github.co/codespaces-editor-help).
+2) Install dependencies:
+
+```bash
+cd api && composer install
+cd ../ws && bun install
+cd ../web && npm install
+```
+
+3) Copy env files:
+
+```bash
+cp api/.env.example api/.env
+cp ws/.env.example ws/.env
+cp web/.env.example web/.env
+```
+
+4) Run all services with pm2:
+
+```bash
+pm2 start pm2.config.cjs
+pm2 logs
+```
+
+- API: http://localhost:8080
+- WS: ws://localhost:8787
+- Web UI: http://localhost:5173
+
+## Notes
+
+- Email verification is skipped by default: `SKIP_EMAIL_VERIFICATION=true`.
+- Turnstile is still required on register/login. Use `dev-pass` for local bypass.
+- Attachments are stored locally in `api/storage`.
+- Run GC for expired attachments:
+
+```bash
+php scripts/gc_attachments.php
+```
